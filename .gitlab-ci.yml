@@ -1,0 +1,24 @@
+default:
+  image: rust:latest
+  tags:
+    - docker
+
+stages:
+  - build
+  - test
+  - deploy
+
+build:
+  stage: build
+  script:
+    - cargo build
+
+test:
+  stage: test
+  needs:
+    - build
+  script:
+    - cargo test
+
+
+
