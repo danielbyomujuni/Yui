@@ -22,7 +22,12 @@ struct Handler;
 #[async_trait]
 impl EventHandler for Handler {
     async fn message(&self, ctx: Context, msg: Message) {
-        if msg.content == "!ping" {
+        if msg.mentions_me(&ctx.http).await.unwrap() {
+            let mut prompt = msg.content;
+            prompt = prompt.replace("<@459823496567193600>", "Yui");
+            println!("{}", prompt);
+
+
             if let Err(why) = msg.channel_id.say(&ctx.http, "Pong!").await {
                 println!("Error sending message: {why:?}");
             }
