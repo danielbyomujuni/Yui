@@ -24,19 +24,21 @@ struct Handler;
 #[async_trait]
 impl EventHandler for Handler {
     async fn message(&self, ctx: Context, msg: Message) {
-        if msg.mentions_me(&ctx.http).await.unwrap() {
-            let mut prompt = msg.content;
-            let typing  = msg.channel_id.start_typing(&ctx.http);
+        unsafe {
+            if msg.mentions_me(&ctx.http).await.unwrap() {
+                let mut prompt = msg.content;
+                let typing = msg.channel_id.start_typing(&ctx.http);
 
-            prompt = prompt.replace("<@459823496567193600>", "Yui");
-            println!("Reqeust: {}", prompt);
+                prompt = prompt.replace("<@459823496567193600>", "");
+                println!("Reqeust: {}", prompt);
 
-            let res = set_prompt(&*prompt).await;
+                let res = set_prompt(&*prompt).await;
 
-            println!("Response: {}", res);
-            typing.stop();
-            if let Err(why) = msg.channel_id.say(&ctx.http, res).await {
-                println!("Error sending message: {why:?}");
+                println!("Response: {}", res);
+                typing.stop();
+                if let Err(why) = msg.channel_id.say(&ctx.http, res).await {
+                    println!("Error sending message: {why:?}");
+                }
             }
         }
     }
